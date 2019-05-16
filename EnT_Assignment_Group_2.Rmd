@@ -1,0 +1,22 @@
+---
+title: "Estimation and Testing Assignment: Appendix"
+author:
+- "Julian Riemersma, s3812936" 
+- "Joris Untersalmberger, s"
+date: "28 - 05 - 2019"
+output:
+  pdf_document: default
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      eval = TRUE)
+```
+
+```{r, include = FALSE}
+load("drinks.rda")
+```
+
+## Exercise 1
+
+**a)**
