@@ -20,3 +20,7 @@ load("drinks.rda")
 ## Exercise 1
 
 **a)**
+```{r}
+
+```
+
