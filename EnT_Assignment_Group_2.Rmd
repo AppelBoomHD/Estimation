@@ -14,13 +14,75 @@ knitr::opts_chunk$set(echo = TRUE,
 ```
 
 ```{r, include = FALSE}
+library(countrycode)
+library(xtable)
+library(tidyverse)
+library(arsenal)
 load("drinks.rda")
 ```
 
+```{r, echo = FALSE, eval = FALSE}
+install.packages("countrycode")
+install.packages("xtable")
+install.packages("arsenal")
+```
+
+
 ## Exercise 1
 
-**a)**
 ```{r}
 
 ```
+
+## Exercise 2
+
+**a)**
+```{r}
+drinks
+#countrycode(drinks$country, 'country.name', 'iso3c')
+#countrycode(drinks$continent, 'country.name', 'iso3c')
+
+drinks_summary <- list("Beer servings" = list(
+  "observations" = ~ count(.data$beer_servings)
+                )
+)
+
+summary.table(group_by(drinks, continent), drinks_summary)
+```
+
+```{r}
+my_controls <- tableby.control(
+  total = F,
+  test = F,
+  numeric.stats = c("mean"),
+  stats.labels = list(
+    mean = "Mean",
+    var = "Variance"
+  )
+)
+
+my_labels <- list(
+  beer_servings = "Beer servings",
+  spirit_servings = "Spirit servings",
+  wine_servings = "Wine servings",
+  total_litres_of_pure_alcohol = "Total litres of pure alcohol"
+)
+
+table_two <- tableby(continent ~ .,
+  data = drinks[,2:6],
+  control = my_controls
+)
+
+summary(table_two,
+  labelTranslations = my_labels,
+  title = "Summary Statistic of Gapminder Data"
+)
+
+#new_drinks <- drinks %>%
+#  group_by(continent) %>%
+#  summarize(mean = mean(beer_servings), variance = var(beer_servings))
+
+#new_drinks
+```
+
 
