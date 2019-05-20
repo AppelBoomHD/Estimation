@@ -31,6 +31,7 @@ install.packages("arsenal")
 ## Exercise 1
 
 ```{r}
+hoi
 
 ```
 
