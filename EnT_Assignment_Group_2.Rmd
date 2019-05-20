@@ -17,14 +17,12 @@ knitr::opts_chunk$set(echo = TRUE,
 library(countrycode)
 library(xtable)
 library(tidyverse)
-library(arsenal)
 load("drinks.rda")
 ```
 
 ```{r, echo = FALSE, eval = FALSE}
 install.packages("countrycode")
 install.packages("xtable")
-install.packages("arsenal")
 ```
 
 
