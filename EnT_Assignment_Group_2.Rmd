@@ -29,7 +29,6 @@ install.packages("xtable")
 ## Exercise 1
 
 ```{r}
-hoi
 
 ```
 
@@ -37,51 +36,93 @@ hoi
 
 **a)**
 ```{r}
-drinks
-#countrycode(drinks$country, 'country.name', 'iso3c')
-#countrycode(drinks$continent, 'country.name', 'iso3c')
+sum_stat <- drinks %>%
+  group_by(continent) %>%
+  summarize_at(vars(beer_servings:total_litres_of_pure_alcohol), list(Mean = mean, Variance = var))
 
-drinks_summary <- list("Beer servings" = list(
-  "observations" = ~ count(.data$beer_servings)
-                )
-)
+sum_stat_obs <- drinks %>%
+  group_by(continent) %>%
+  summarize(Observations = n())
 
-summary.table(group_by(drinks, continent), drinks_summary)
+sum_stat <- cbind(sum_stat, sum_stat_obs[, 2])
+
+sum_stat_rounded <- sum_stat
+sum_stat_rounded[, 2:9] <- round(sum_stat[, 2:9], 2)
+
+xtable(t(sum_stat_rounded))
+
+sum_stat
 ```
 
+**b)**
 ```{r}
-my_controls <- tableby.control(
-  total = F,
-  test = F,
-  numeric.stats = c("mean"),
-  stats.labels = list(
-    mean = "Mean",
-    var = "Variance"
-  )
-)
+alpha <- 1 - 0.985
 
-my_labels <- list(
-  beer_servings = "Beer servings",
-  spirit_servings = "Spirit servings",
-  wine_servings = "Wine servings",
-  total_litres_of_pure_alcohol = "Total litres of pure alcohol"
-)
+attach(sum_stat[4, ])
 
-table_two <- tableby(continent ~ .,
-  data = drinks[,2:6],
-  control = my_controls
-)
+error_eu <- qnorm(1 - alpha / 2) * sqrt(beer_servings_Variance / Observations)
 
-summary(table_two,
-  labelTranslations = my_labels,
-  title = "Summary Statistic of Gapminder Data"
-)
+left_eu <- beer_servings_Mean - error_eu
+right_eu <- beer_servings_Mean + error_eu
 
-#new_drinks <- drinks %>%
-#  group_by(continent) %>%
-#  summarize(mean = mean(beer_servings), variance = var(beer_servings))
+detach(sum_stat[4, ])
 
-#new_drinks
+attach(sum_stat[5, ])
+
+error_oc <- qt(1 - alpha / 2, df = Observations - 1) * sqrt(beer_servings_Variance / Observations)
+
+left_oc <- beer_servings_Mean - error_oc
+right_oc <- beer_servings_Mean + error_oc
+
+detach(sum_stat[5, ])
+
+left_eu
+right_eu
+
+left_oc
+right_oc
 ```
 
+**c)**
+```{r}
+alpha <- 1 - 0.97
+
+eu_spirit_servings_mean <- sum_stat %>%
+  slice(4) %>%
+  select(spirit_servings_Mean) %>%
+  as.numeric
+
+eu_spirit_servings_variance <- sum_stat %>%
+  slice(4) %>%
+  select(spirit_servings_Variance) %>%
+  as.numeric
+
+eu_observations <- sum_stat %>%
+  slice(4) %>%
+  select(Observations) %>%
+  as.numeric
+
+am_spirit_servings_mean <- sum_stat %>%
+  slice(2) %>%
+  select(spirit_servings_Mean) %>%
+  as.numeric
+
+am_spirit_servings_variance <- sum_stat %>%
+  slice(2) %>%
+  select(spirit_servings_Variance) %>%
+  as.numeric
+
+am_observations <- sum_stat %>%
+  slice(2) %>%
+  select(Observations) %>%
+  as.numeric
+
+error_eu_am <- qnorm(1 - alpha / 2) * sqrt(eu_spirit_servings_variance / eu_observations + am_spirit_servings_variance / am_observations)
+
+left_eu_am <- eu_spirit_servings_mean - am_spirit_servings_mean - error_eu_am
+right_eu_am <- eu_spirit_servings_mean - am_spirit_servings_mean + error_eu_am
+
+left_eu_am
+right_eu_am
+```
 
