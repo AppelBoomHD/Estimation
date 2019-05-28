@@ -60,7 +60,8 @@ alpha <- 1 - 0.985
 
 attach(sum_stat[4, ])
 
-error_eu <- qnorm(1 - alpha / 2) * sqrt(beer_servings_Variance / Observations)
+z_eu <- qnorm(1 - alpha / 2)
+error_eu <- z_eu * sqrt(beer_servings_Variance / Observations)
 
 left_eu <- beer_servings_Mean - error_eu
 right_eu <- beer_servings_Mean + error_eu
@@ -69,12 +70,17 @@ detach(sum_stat[4, ])
 
 attach(sum_stat[5, ])
 
-error_oc <- qt(1 - alpha / 2, df = Observations - 1) * sqrt(beer_servings_Variance / Observations)
+z_oc <- qt(1 - alpha / 2, df = Observations - 1)
+error_oc <- z_oc * sqrt(beer_servings_Variance / Observations)
 
 left_oc <- beer_servings_Mean - error_oc
 right_oc <- beer_servings_Mean + error_oc
 
 detach(sum_stat[5, ])
+
+alpha
+z_eu
+z_oc
 
 left_eu
 right_eu
@@ -117,7 +123,12 @@ am_observations <- sum_stat %>%
   select(Observations) %>%
   as.numeric
 
-error_eu_am <- qnorm(1 - alpha / 2) * sqrt(eu_spirit_servings_variance / eu_observations + am_spirit_servings_variance / am_observations)
+
+z_eu_am <- qnorm(1 - alpha / 2)
+error_eu_am <- z_eu_am * sqrt(eu_spirit_servings_variance / eu_observations + am_spirit_servings_variance / am_observations)
+
+alpha
+z_eu_am
 
 left_eu_am <- eu_spirit_servings_mean - am_spirit_servings_mean - error_eu_am
 right_eu_am <- eu_spirit_servings_mean - am_spirit_servings_mean + error_eu_am
